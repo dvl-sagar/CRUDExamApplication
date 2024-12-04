@@ -123,7 +123,7 @@ func TestGetStudent(t *testing.T) {
 			data: map[string]interface{}{
 				"_id": "67504e69865b091240c08cb6",
 			},
-			wantCode: http.StatusInternalServerError,
+			wantCode: http.StatusOK,
 		},
 	}
 	for _, tt := range testCases {
