@@ -55,13 +55,13 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/dvl-sagar/CRUDExamApplication/handler.go (0.0%)</option>
+				<option value="file0">github.com/dvl-sagar/CRUDExamApplication/handler.go (40.5%)</option>
 				
 				<option value="file1">github.com/dvl-sagar/CRUDExamApplication/main.go (0.0%)</option>
 				
-				<option value="file2">github.com/dvl-sagar/CRUDExamApplication/service.go (0.0%)</option>
+				<option value="file2">github.com/dvl-sagar/CRUDExamApplication/service.go (41.2%)</option>
 				
-				<option value="file3">github.com/dvl-sagar/CRUDExamApplication/utils.go (42.5%)</option>
+				<option value="file3">github.com/dvl-sagar/CRUDExamApplication/utils.go (51.5%)</option>
 				
 				</select>
 			</div>
@@ -85,13 +85,13 @@ import (
         "go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func RegisterStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+func RegisterStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
         w.Header().Set("Content-Type", "application/json")
 
         var student Student
         err := json.NewDecoder(r.Body).Decode(&amp;student)
         // fmt.Println(student)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode["Json could not be decoded"],
@@ -102,8 +102,8 @@ func RegisterStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" 
                 w.Write(r)
                 return
         }</span>
-        <span class="cov0" title="0">valRes, err := RegisterValidation(student)
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">valRes, err := RegisterValidation(student)
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode[valRes],
@@ -114,7 +114,7 @@ func RegisterStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" 
                 w.Write(r)
                 return
         }</span>
-        <span class="cov0" title="0">resp, err := RegisterStudentService(student)
+        <span class="cov8" title="1">resp, err := RegisterStudentService(student)
         if err != nil </span><span class="cov0" title="0">{
                 res := Response{
                         ServiceName: serviceName,
@@ -127,7 +127,7 @@ func RegisterStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" 
                 return
         }</span>
 
-        <span class="cov0" title="0">res := Response{
+        <span class="cov8" title="1">res := Response{
                 ServiceName: serviceName,
                 MessageCode: MsgCode["Data saved successfully"],
                 Status:      Ok,
@@ -138,12 +138,12 @@ func RegisterStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" 
         w.Write(rd)</span>
 }
 
-func GetStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+func GetStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
         w.Header().Set("Content-Type", "application/json")
 
         var student map[string]interface{}
         err := json.NewDecoder(r.Body).Decode(&amp;student)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode["Json could not be decoded"],
@@ -154,8 +154,8 @@ func GetStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" title
                 w.Write(r)
                 return
         }</span>
-        <span class="cov0" title="0">id, err := fetchID(student)
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">id, err := fetchID(student)
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode[id],
@@ -166,9 +166,9 @@ func GetStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" title
                 w.Write(r)
                 return
         }</span>
-        <span class="cov0" title="0">objID, err := primitive.ObjectIDFromHex(id)
+        <span class="cov8" title="1">objID, err := primitive.ObjectIDFromHex(id)
         log.Println("ObjID : ", objID)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode["_id could not be converted from Hex"],
@@ -180,8 +180,8 @@ func GetStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" title
                 return
         }</span>
 
-        <span class="cov0" title="0">std, err := getStudentByID(objID)
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">std, err := getStudentByID(objID)
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode["Student Data not found"],
@@ -378,32 +378,30 @@ import (
 
         "go.mongodb.org/mongo-driver/bson"
         "go.mongodb.org/mongo-driver/bson/primitive"
-        "go.mongodb.org/mongo-driver/mongo"
         "go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var Applicant *mongo.Collection
-
-func RegisterStudentService(student Student) (any, error) <span class="cov0" title="0">{
+// creating new user
+func RegisterStudentService(student Student) (any, error) <span class="cov8" title="1">{
         response := make(map[string]interface{})
         studentDB, err := SetStruct(student)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
-        <span class="cov0" title="0">Applicant = GetCollection("ExamApplication")
+        <span class="cov8" title="1">Applicant := GetCollection("ExamApplication")
         result, err := Applicant.InsertOne(context.Background(), studentDB)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
-        <span class="cov0" title="0">response["_id"] = result.InsertedID
+        <span class="cov8" title="1">response["_id"] = result.InsertedID
         return response, nil</span>
 }
 
-func getStudentByID(objID primitive.ObjectID) (any, error) <span class="cov0" title="0">{
+func getStudentByID(objID primitive.ObjectID) (any, error) <span class="cov8" title="1">{
         var oneStudent StudentDB
-        Applicant = GetCollection("ExamApplication")
+        Applicant := GetCollection("ExamApplication")
         err := Applicant.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&amp;oneStudent)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 fmt.Println("Document not found")
                 return nil, err
         }</span>
@@ -418,7 +416,7 @@ func updateStudentByID(objID primitive.ObjectID, std Student) (any, error) <span
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
-        <span class="cov0" title="0">Applicant = GetCollection("ExamApplication")
+        <span class="cov0" title="0">Applicant := GetCollection("ExamApplication")
         opt := options.FindOneAndUpdate().SetReturnDocument(options.After)
         err = Applicant.FindOneAndUpdate(context.Background(), bson.M{"_id": objID}, finalQ, opt).Decode(&amp;resp)
         if err != nil </span><span class="cov0" title="0">{
@@ -430,7 +428,7 @@ func updateStudentByID(objID primitive.ObjectID, std Student) (any, error) <span
 
 func deleteStudentByID(objID primitive.ObjectID) (any, error) <span class="cov0" title="0">{
 
-        Applicant = GetCollection("ExamApplication")
+        Applicant := GetCollection("ExamApplication")
         deleted, err := Applicant.DeleteOne(context.Background(), bson.M{"_id": objID})
         if err != nil </span><span class="cov0" title="0">{
                 fmt.Println("Student Data not found")
@@ -448,6 +446,7 @@ import (
         "errors"
         "fmt"
         "log"
+        "os"
         "reflect"
         "strings"
         "time"
@@ -459,18 +458,18 @@ import (
         "go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func GetConfig() <span class="cov0" title="0">{
-        mongoUri := "mongodb+srv://admin:admin123@cluster0.gfsyk.mongodb.net/?retryWrites=true&amp;w=majority&amp;appName=Cluster0"
+func GetConfig() <span class="cov8" title="1">{
+        mongoUri := os.Getenv("MONGODB")
         if mongoUri == "" </span><span class="cov0" title="0">{
                 log.Fatal("Database URI not found")
         }</span>
-        <span class="cov0" title="0">Config.MongoUri = mongoUri
+        <span class="cov8" title="1">Config.MongoUri = mongoUri
         fmt.Println(Config)</span>
 }
 
 var Client *mongo.Client
 
-func ConnectDB() <span class="cov0" title="0">{
+func ConnectDB() <span class="cov8" title="1">{
         // connecting to MONGODB server
         var err error
         Client, err = mongo.Connect(context.Background(), options.Client().ApplyURI(Config.MongoUri))
@@ -478,19 +477,19 @@ func ConnectDB() <span class="cov0" title="0">{
                 log.Fatal("Mongo Connection Failed", err)
         }</span>
 
-        <span class="cov0" title="0">err = Client.Ping(context.Background(), readpref.Primary())
+        <span class="cov8" title="1">err = Client.Ping(context.Background(), readpref.Primary())
         if err != nil </span><span class="cov0" title="0">{
                 log.Fatal("Ping failed ", err)
         }</span>
 
-        <span class="cov0" title="0">fmt.Println("Connected to MongoDB!")</span>
+        <span class="cov8" title="1">fmt.Println("Connected to MongoDB!")</span>
 }
 
-func GetCollection(name string) *mongo.Collection <span class="cov0" title="0">{
+func GetCollection(name string) *mongo.Collection <span class="cov8" title="1">{
         if Client == nil </span><span class="cov0" title="0">{
                 ConnectDB()
         }</span>
-        <span class="cov0" title="0">return Client.Database("CRUDExamApplication").Collection(name)</span>
+        <span class="cov8" title="1">return Client.Database("CRUDExamApplication").Collection(name)</span>
 }
 
 func AgeCalc(dobstr string) (int, error) <span class="cov8" title="1">{

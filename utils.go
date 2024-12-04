@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"reflect"
 	"strings"
 	"time"
@@ -17,7 +18,7 @@ import (
 )
 
 func GetConfig() {
-	mongoUri := "mongodb+srv://admin:admin123@cluster0.gfsyk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+	mongoUri := os.Getenv("MONGODB")
 	if mongoUri == "" {
 		log.Fatal("Database URI not found")
 	}
