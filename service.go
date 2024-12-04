@@ -55,13 +55,13 @@ func updateStudentByID(objID primitive.ObjectID, std Student) (any, error) {
 }
 
 func deleteStudentByID(objID primitive.ObjectID) (any, error) {
-
+	var oneStudent StudentDB
 	Applicant := GetCollection("ExamApplication")
-	deleted, err := Applicant.DeleteOne(context.Background(), bson.M{"_id": objID})
+	err := Applicant.FindOneAndDelete(context.Background(), bson.M{"_id": objID}).Decode(&oneStudent)
 	if err != nil {
 		fmt.Println("Student Data not found")
 		return nil, err
 	}
 
-	return deleted, nil
+	return &oneStudent, nil
 }

@@ -174,17 +174,16 @@ func fetchID(student map[string]interface{}) (string, error) {
 
 func prepareQuery(std Student) (bson.D, error) {
 	query := bson.D{}
-	flag := false
 	if std.Name != "" {
 		fName, mName, lName := SplitName(std.Name)
 		query = append(query, primitive.E{Key: "firstName", Value: fName})
 		query = append(query, primitive.E{Key: "middleName", Value: mName})
 		query = append(query, primitive.E{Key: "lastName", Value: lName})
-		flag = true
+
 	}
 	if std.Gender != "" {
-		query = append(query, primitive.E{Key: "address", Value: std.Address})
-		flag = true
+		query = append(query, primitive.E{Key: "gender", Value: std.Gender})
+
 	}
 	if std.DOB != "" {
 		age, err := AgeCalc(std.DOB)
@@ -193,17 +192,16 @@ func prepareQuery(std Student) (bson.D, error) {
 		}
 		query = append(query, primitive.E{Key: "dob", Value: std.DOB})
 		query = append(query, primitive.E{Key: "age", Value: age})
-		flag = true
+
 	}
 
 	if std.StateOfDomicile != "" {
 		query = append(query, primitive.E{Key: "stateOfDomicile", Value: std.StateOfDomicile})
-		flag = true
+
 	}
 
 	if std.HomeDistrict != "" {
 		query = append(query, primitive.E{Key: "homeDistrict", Value: std.HomeDistrict})
-		flag = true
 	}
 
 	if std.FatherName != "" {
@@ -211,57 +209,51 @@ func prepareQuery(std Student) (bson.D, error) {
 		query = append(query, primitive.E{Key: "fatherFirstName", Value: fName})
 		query = append(query, primitive.E{Key: "fatherMiddleName", Value: mName})
 		query = append(query, primitive.E{Key: "fatherLastName", Value: lName})
-		flag = true
 	}
 
 	if std.BoardName != "" {
 		query = append(query, primitive.E{Key: "boardName", Value: std.BoardName})
-		flag = true
 	}
 
 	if std.YearOfPassing != "" {
 		query = append(query, primitive.E{Key: "yearOfPassing", Value: std.YearOfPassing})
-		flag = true
 	}
 
 	if std.RollNumber != "" {
 		query = append(query, primitive.E{Key: "rollNumber", Value: std.RollNumber})
-		flag = true
+
 	}
 
 	if std.Address != "" {
 		query = append(query, primitive.E{Key: "address", Value: std.Address})
-		flag = true
+
 	}
 
 	if std.HouseNoVillage != "" {
 		query = append(query, primitive.E{Key: "houseNoVillage", Value: std.HouseNoVillage})
-		flag = true
+
 	}
 
 	if std.State != "" {
 		query = append(query, primitive.E{Key: "state", Value: std.State})
-		flag = true
+
 	}
 
 	if std.District != "" {
 		query = append(query, primitive.E{Key: "district", Value: std.District})
-		flag = true
+
 	}
 
 	if std.City != "" {
 		query = append(query, primitive.E{Key: "city", Value: std.City})
-		flag = true
+
 	}
 
 	if std.PinCode != 0 {
 		query = append(query, primitive.E{Key: "pinCode", Value: std.PinCode})
-		flag = true
+
 	}
 
-	if flag {
-		query = append(query, primitive.E{Key: "updated_at", Value: time.Now()})
-	}
 	update := bson.D{primitive.E{Key: "$set", Value: query}}
 	return update, nil
 }

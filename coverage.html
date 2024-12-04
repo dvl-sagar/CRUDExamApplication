@@ -55,13 +55,13 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/dvl-sagar/CRUDExamApplication/handler.go (40.5%)</option>
+				<option value="file0">github.com/dvl-sagar/CRUDExamApplication/handler.go (89.3%)</option>
 				
 				<option value="file1">github.com/dvl-sagar/CRUDExamApplication/main.go (0.0%)</option>
 				
-				<option value="file2">github.com/dvl-sagar/CRUDExamApplication/service.go (41.2%)</option>
+				<option value="file2">github.com/dvl-sagar/CRUDExamApplication/service.go (88.6%)</option>
 				
-				<option value="file3">github.com/dvl-sagar/CRUDExamApplication/utils.go (51.5%)</option>
+				<option value="file3">github.com/dvl-sagar/CRUDExamApplication/utils.go (96.6%)</option>
 				
 				</select>
 			</div>
@@ -193,7 +193,7 @@ func GetStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" title
                 return
         }</span>
 
-        <span class="cov0" title="0">res := Response{
+        <span class="cov8" title="1">res := Response{
                 ServiceName: serviceName,
                 MessageCode: MsgCode["Data retrieved successfully"],
                 Status:      Ok,
@@ -204,12 +204,12 @@ func GetStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" title
         w.Write(rd)</span>
 }
 
-func UpdateStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+func UpdateStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
         w.Header().Set("Content-Type", "application/json")
 
         var student Student
         err := json.NewDecoder(r.Body).Decode(&amp;student)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode["Json could not be decoded"],
@@ -221,7 +221,7 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" ti
                 return
         }</span>
 
-        <span class="cov0" title="0">if student.Id == "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if student.Id == "" </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode["_id not passed"],
@@ -233,9 +233,9 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" ti
                 return
         }</span>
 
-        <span class="cov0" title="0">objID, err := primitive.ObjectIDFromHex(student.Id)
+        <span class="cov8" title="1">objID, err := primitive.ObjectIDFromHex(student.Id)
         log.Println("ObjID : ", objID)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode["_id could not be converted from Hex"],
@@ -247,8 +247,8 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" ti
                 return
         }</span>
 
-        <span class="cov0" title="0">result, err := updateStudentByID(objID, student)
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">result, err := updateStudentByID(objID, student)
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode["Data could not be saved in Database"],
@@ -260,7 +260,7 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" ti
                 return
         }</span>
 
-        <span class="cov0" title="0">res := Response{
+        <span class="cov8" title="1">res := Response{
                 ServiceName: serviceName,
                 MessageCode: MsgCode["Data saved successfully"],
                 Status:      Ok,
@@ -271,12 +271,12 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" ti
         w.Write(rd)</span>
 }
 
-func DeleteStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+func DeleteStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
         w.Header().Set("Content-Type", "application/json")
 
         var student map[string]interface{}
         err := json.NewDecoder(r.Body).Decode(&amp;student)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode["Json could not be decoded"],
@@ -288,7 +288,7 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" ti
                 return
         }</span>
 
-        <span class="cov0" title="0">id, err := fetchID(student)
+        <span class="cov8" title="1">id, err := fetchID(student)
         if err != nil </span><span class="cov0" title="0">{
                 res := Response{
                         ServiceName: serviceName,
@@ -301,9 +301,9 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" ti
                 return
         }</span>
 
-        <span class="cov0" title="0">objID, err := primitive.ObjectIDFromHex(id)
+        <span class="cov8" title="1">objID, err := primitive.ObjectIDFromHex(id)
         log.Println("ObjID : ", objID)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode["_id could not be converted from Hex"],
@@ -315,8 +315,8 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" ti
                 return
         }</span>
 
-        <span class="cov0" title="0">result, err := deleteStudentByID(objID)
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">result, err := deleteStudentByID(objID)
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
                         MessageCode: MsgCode["Student Data not found"],
@@ -327,7 +327,6 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) <span class="cov0" ti
                 w.Write(r)
                 return
         }</span>
-
         <span class="cov0" title="0">res := Response{
                 ServiceName: serviceName,
                 MessageCode: MsgCode["Data deleted successfully"],
@@ -406,36 +405,36 @@ func getStudentByID(objID primitive.ObjectID) (any, error) <span class="cov8" ti
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">return &amp;oneStudent, nil</span>
+        <span class="cov8" title="1">return &amp;oneStudent, nil</span>
 }
 
-func updateStudentByID(objID primitive.ObjectID, std Student) (any, error) <span class="cov0" title="0">{
+func updateStudentByID(objID primitive.ObjectID, std Student) (any, error) <span class="cov8" title="1">{
 
         var resp StudentDB
         finalQ, err := prepareQuery(std)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
-        <span class="cov0" title="0">Applicant := GetCollection("ExamApplication")
+        <span class="cov8" title="1">Applicant := GetCollection("ExamApplication")
         opt := options.FindOneAndUpdate().SetReturnDocument(options.After)
         err = Applicant.FindOneAndUpdate(context.Background(), bson.M{"_id": objID}, finalQ, opt).Decode(&amp;resp)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 fmt.Println("Student Data not found")
                 return nil, err
         }</span>
-        <span class="cov0" title="0">return resp, nil</span>
+        <span class="cov8" title="1">return resp, nil</span>
 }
 
-func deleteStudentByID(objID primitive.ObjectID) (any, error) <span class="cov0" title="0">{
-
+func deleteStudentByID(objID primitive.ObjectID) (any, error) <span class="cov8" title="1">{
+        var oneStudent StudentDB
         Applicant := GetCollection("ExamApplication")
-        deleted, err := Applicant.DeleteOne(context.Background(), bson.M{"_id": objID})
-        if err != nil </span><span class="cov0" title="0">{
+        err := Applicant.FindOneAndDelete(context.Background(), bson.M{"_id": objID}).Decode(&amp;oneStudent)
+        if err != nil </span><span class="cov8" title="1">{
                 fmt.Println("Student Data not found")
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">return deleted, nil</span>
+        <span class="cov0" title="0">return &amp;oneStudent, nil</span>
 }
 </pre>
 		
@@ -613,97 +612,89 @@ func fetchID(student map[string]interface{}) (string, error) <span class="cov8" 
         <span class="cov8" title="1">return id, nil</span>
 }
 
-func prepareQuery(std Student) (bson.D, error) <span class="cov0" title="0">{
+func prepareQuery(std Student) (bson.D, error) <span class="cov8" title="1">{
         query := bson.D{}
-        flag := false
-        if std.Name != "" </span><span class="cov0" title="0">{
+        if std.Name != "" </span><span class="cov8" title="1">{
                 fName, mName, lName := SplitName(std.Name)
                 query = append(query, primitive.E{Key: "firstName", Value: fName})
                 query = append(query, primitive.E{Key: "middleName", Value: mName})
                 query = append(query, primitive.E{Key: "lastName", Value: lName})
-                flag = true
+
         }</span>
-        <span class="cov0" title="0">if std.Gender != "" </span><span class="cov0" title="0">{
-                query = append(query, primitive.E{Key: "address", Value: std.Address})
-                flag = true
+        <span class="cov8" title="1">if std.Gender != "" </span><span class="cov8" title="1">{
+                query = append(query, primitive.E{Key: "gender", Value: std.Gender})
+
         }</span>
-        <span class="cov0" title="0">if std.DOB != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.DOB != "" </span><span class="cov8" title="1">{
                 age, err := AgeCalc(std.DOB)
-                if err != nil </span><span class="cov0" title="0">{
+                if err != nil </span><span class="cov8" title="1">{
                         return query, err
                 }</span>
-                <span class="cov0" title="0">query = append(query, primitive.E{Key: "dob", Value: std.DOB})
-                query = append(query, primitive.E{Key: "age", Value: age})
-                flag = true</span>
+                <span class="cov8" title="1">query = append(query, primitive.E{Key: "dob", Value: std.DOB})
+                query = append(query, primitive.E{Key: "age", Value: age})</span>
+
         }
 
-        <span class="cov0" title="0">if std.StateOfDomicile != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.StateOfDomicile != "" </span><span class="cov8" title="1">{
                 query = append(query, primitive.E{Key: "stateOfDomicile", Value: std.StateOfDomicile})
-                flag = true
+
         }</span>
 
-        <span class="cov0" title="0">if std.HomeDistrict != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.HomeDistrict != "" </span><span class="cov8" title="1">{
                 query = append(query, primitive.E{Key: "homeDistrict", Value: std.HomeDistrict})
-                flag = true
         }</span>
 
-        <span class="cov0" title="0">if std.FatherName != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.FatherName != "" </span><span class="cov8" title="1">{
                 fName, mName, lName := SplitName(std.FatherName)
                 query = append(query, primitive.E{Key: "fatherFirstName", Value: fName})
                 query = append(query, primitive.E{Key: "fatherMiddleName", Value: mName})
                 query = append(query, primitive.E{Key: "fatherLastName", Value: lName})
-                flag = true
         }</span>
 
-        <span class="cov0" title="0">if std.BoardName != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.BoardName != "" </span><span class="cov8" title="1">{
                 query = append(query, primitive.E{Key: "boardName", Value: std.BoardName})
-                flag = true
         }</span>
 
-        <span class="cov0" title="0">if std.YearOfPassing != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.YearOfPassing != "" </span><span class="cov8" title="1">{
                 query = append(query, primitive.E{Key: "yearOfPassing", Value: std.YearOfPassing})
-                flag = true
         }</span>
 
-        <span class="cov0" title="0">if std.RollNumber != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.RollNumber != "" </span><span class="cov8" title="1">{
                 query = append(query, primitive.E{Key: "rollNumber", Value: std.RollNumber})
-                flag = true
+
         }</span>
 
-        <span class="cov0" title="0">if std.Address != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.Address != "" </span><span class="cov8" title="1">{
                 query = append(query, primitive.E{Key: "address", Value: std.Address})
-                flag = true
+
         }</span>
 
-        <span class="cov0" title="0">if std.HouseNoVillage != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.HouseNoVillage != "" </span><span class="cov8" title="1">{
                 query = append(query, primitive.E{Key: "houseNoVillage", Value: std.HouseNoVillage})
-                flag = true
+
         }</span>
 
-        <span class="cov0" title="0">if std.State != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.State != "" </span><span class="cov8" title="1">{
                 query = append(query, primitive.E{Key: "state", Value: std.State})
-                flag = true
+
         }</span>
 
-        <span class="cov0" title="0">if std.District != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.District != "" </span><span class="cov8" title="1">{
                 query = append(query, primitive.E{Key: "district", Value: std.District})
-                flag = true
+
         }</span>
 
-        <span class="cov0" title="0">if std.City != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.City != "" </span><span class="cov8" title="1">{
                 query = append(query, primitive.E{Key: "city", Value: std.City})
-                flag = true
+
         }</span>
 
-        <span class="cov0" title="0">if std.PinCode != 0 </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if std.PinCode != 0 </span><span class="cov8" title="1">{
                 query = append(query, primitive.E{Key: "pinCode", Value: std.PinCode})
-                flag = true
+
         }</span>
 
-        <span class="cov0" title="0">if flag </span><span class="cov0" title="0">{
-                query = append(query, primitive.E{Key: "updated_at", Value: time.Now()})
-        }</span>
-        <span class="cov0" title="0">update := bson.D{primitive.E{Key: "$set", Value: query}}
+        <span class="cov8" title="1">update := bson.D{primitive.E{Key: "$set", Value: query}}
         return update, nil</span>
 }
 </pre>

@@ -2,7 +2,10 @@ package main
 
 import (
 	"errors"
+	"reflect"
 	"testing"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func TestRegisterValidation(t *testing.T) {
@@ -333,6 +336,102 @@ func TestFetchID(t *testing.T) {
 			}
 			if got != tt.wantStr {
 				t.Errorf("\ngot %+v \nwant %+v", got, tt.wantStr)
+			}
+		})
+	}
+}
+
+func TestPrepareQuery(t *testing.T) {
+	tests := []struct {
+		name      string
+		input     Student
+		want      bson.D
+		expectErr error
+	}{
+		{
+			name: "Complete Input",
+			input: Student{
+				Name:            "John Doe",
+				Gender:          "Male",
+				DOB:             "21-08-2001",
+				StateOfDomicile: "State",
+				HomeDistrict:    "District",
+				FatherName:      "Robert Doe",
+				BoardName:       "CBSE",
+				YearOfPassing:   "2018",
+				RollNumber:      "123456",
+				Address:         "123 Street",
+				HouseNoVillage:  "A1",
+				State:           "State",
+				District:        "District",
+				City:            "City",
+				PinCode:         123456,
+			},
+			want: bson.D{
+				{Key: "$set", Value: bson.D{
+					{Key: "firstName", Value: "John"},
+					{Key: "middleName", Value: ""},
+					{Key: "lastName", Value: "Doe"},
+					{Key: "gender", Value: "Male"},
+					{Key: "dob", Value: "21-08-2001"},
+					{Key: "age", Value: 23},
+					{Key: "stateOfDomicile", Value: "State"},
+					{Key: "homeDistrict", Value: "District"},
+					{Key: "fatherFirstName", Value: "Robert"},
+					{Key: "fatherMiddleName", Value: ""},
+					{Key: "fatherLastName", Value: "Doe"},
+					{Key: "boardName", Value: "CBSE"},
+					{Key: "yearOfPassing", Value: "2018"},
+					{Key: "rollNumber", Value: "123456"},
+					{Key: "address", Value: "123 Street"},
+					{Key: "houseNoVillage", Value: "A1"},
+					{Key: "state", Value: "State"},
+					{Key: "district", Value: "District"},
+					{Key: "city", Value: "City"},
+					{Key: "pinCode", Value: 123456},
+				}},
+			},
+			expectErr: nil,
+		},
+		{
+			name: "Invalid DOB",
+			input: Student{
+				Name: "John Doe",
+				DOB:  "invalid-date",
+			},
+			want: bson.D{
+				{Key: "firstName", Value: "John"},
+				{Key: "middleName", Value: ""},
+				{Key: "lastName", Value: "Doe"},
+			},
+			expectErr: errors.New(ErrDateInvalid),
+		},
+		{
+			name: "Date Paradox",
+			input: Student{
+				Name: "John Doe",
+				DOB:  "04-12-2024",
+			},
+			want: bson.D{
+				{Key: "firstName", Value: "John"},
+				{Key: "middleName", Value: ""},
+				{Key: "lastName", Value: "Doe"},
+			},
+			expectErr: errors.New(ErrDateParadox),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := prepareQuery(tt.input)
+
+			if err != nil {
+				if err.Error() != tt.expectErr.Error() {
+					t.Errorf("\ngot error %v\nwant error %v", err, tt.expectErr)
+				}
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("\ngot %v \nwant %v", got, tt.want)
 			}
 		})
 	}

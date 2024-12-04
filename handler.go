@@ -250,7 +250,6 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) {
 		w.Write(r)
 		return
 	}
-
 	res := Response{
 		ServiceName: serviceName,
 		MessageCode: MsgCode["Data deleted successfully"],
