@@ -13,23 +13,22 @@ func RegisterStudent(w http.ResponseWriter, r *http.Request) {
 
 	var student Student
 	err := json.NewDecoder(r.Body).Decode(&student)
-	// fmt.Println(student)
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode["Json could not be decoded"],
+			MessageCode: MsgCode[ErrJsonNotMarshal],
 			Status:      Notok,
-			Msg:         err.Error()}
+			Msg:         ErrJsonNotMarshal}
 		w.WriteHeader(http.StatusBadRequest)
 		r, _ := json.Marshal(res)
 		w.Write(r)
 		return
 	}
-	valRes, err := RegisterValidation(student)
+	err = RegisterValidation(student)
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode[valRes],
+			MessageCode: MsgCode[err.Error()],
 			Status:      Notok,
 			Msg:         err.Error()}
 		w.WriteHeader(http.StatusBadRequest)
@@ -41,7 +40,7 @@ func RegisterStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode["Data could not saved in Database"],
+			MessageCode: MsgCode[err.Error()],
 			Status:      Notok,
 			Msg:         err.Error()}
 		w.WriteHeader(http.StatusInternalServerError)
@@ -52,9 +51,9 @@ func RegisterStudent(w http.ResponseWriter, r *http.Request) {
 
 	res := Response{
 		ServiceName: serviceName,
-		MessageCode: MsgCode["Data saved successfully"],
+		MessageCode: MsgCode[MsgDataSavedSuccessfully],
 		Status:      Ok,
-		Msg:         "Operation Successfull",
+		Msg:         MsgDataSavedSuccessfully,
 		Data:        resp}
 	w.WriteHeader(http.StatusOK)
 	rd, _ := json.Marshal(res)
@@ -69,9 +68,9 @@ func GetStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode["Json could not be decoded"],
+			MessageCode: MsgCode[ErrJsonNotMarshal],
 			Status:      Notok,
-			Msg:         "Invalid"}
+			Msg:         ErrJsonNotMarshal}
 		w.WriteHeader(http.StatusBadRequest)
 		r, _ := json.Marshal(res)
 		w.Write(r)
@@ -81,7 +80,7 @@ func GetStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode[id],
+			MessageCode: MsgCode[err.Error()],
 			Status:      Notok,
 			Msg:         err.Error()}
 		w.WriteHeader(http.StatusBadRequest)
@@ -94,9 +93,9 @@ func GetStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode["_id could not be converted from Hex"],
+			MessageCode: MsgCode[ErrNotObjId],
 			Status:      Notok,
-			Msg:         "could not convert to the ObjectID"}
+			Msg:         ErrNotObjId}
 		w.WriteHeader(http.StatusBadRequest)
 		r, _ := json.Marshal(res)
 		w.Write(r)
@@ -107,9 +106,9 @@ func GetStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode["Student Data not found"],
+			MessageCode: MsgCode[ErrDataNotFound],
 			Status:      Notok,
-			Msg:         err.Error()}
+			Msg:         ErrDataNotFound}
 		w.WriteHeader(http.StatusInternalServerError)
 		r, _ := json.Marshal(res)
 		w.Write(r)
@@ -118,9 +117,9 @@ func GetStudent(w http.ResponseWriter, r *http.Request) {
 
 	res := Response{
 		ServiceName: serviceName,
-		MessageCode: MsgCode["Data retrieved successfully"],
+		MessageCode: MsgCode[MsgDataFound],
 		Status:      Ok,
-		Msg:         "Operation Successfully",
+		Msg:         MsgDataFound,
 		Data:        std}
 	w.WriteHeader(http.StatusOK)
 	rd, _ := json.Marshal(res)
@@ -135,9 +134,9 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode["Json could not be decoded"],
+			MessageCode: MsgCode[ErrJsonNotMarshal],
 			Status:      Notok,
-			Msg:         "Invalid"}
+			Msg:         ErrJsonNotMarshal}
 		w.WriteHeader(http.StatusBadRequest)
 		r, _ := json.Marshal(res)
 		w.Write(r)
@@ -147,9 +146,9 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) {
 	if student.Id == "" {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode["_id not passed"],
+			MessageCode: MsgCode[ErrIdNotPassed],
 			Status:      Notok,
-			Msg:         "Id cannot be empty"}
+			Msg:         ErrIdNotPassed}
 		w.WriteHeader(http.StatusBadRequest)
 		r, _ := json.Marshal(res)
 		w.Write(r)
@@ -161,9 +160,9 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode["_id could not be converted from Hex"],
+			MessageCode: MsgCode[ErrNotObjId],
 			Status:      Notok,
-			Msg:         "could not convert to the ObjectID"}
+			Msg:         ErrNotObjId}
 		w.WriteHeader(http.StatusBadRequest)
 		r, _ := json.Marshal(res)
 		w.Write(r)
@@ -174,7 +173,7 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode["Data could not be saved in Database"],
+			MessageCode: MsgCode[err.Error()],
 			Status:      Notok,
 			Msg:         err.Error()}
 		w.WriteHeader(http.StatusInternalServerError)
@@ -185,9 +184,9 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) {
 
 	res := Response{
 		ServiceName: serviceName,
-		MessageCode: MsgCode["Data saved successfully"],
+		MessageCode: MsgCode[MsgDataSavedSuccessfully],
 		Status:      Ok,
-		Msg:         "Operation Successfully",
+		Msg:         MsgDataSavedSuccessfully,
 		Data:        result}
 	w.WriteHeader(http.StatusOK)
 	rd, _ := json.Marshal(res)
@@ -202,9 +201,9 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode["Json could not be decoded"],
+			MessageCode: MsgCode[ErrJsonNotMarshal],
 			Status:      Notok,
-			Msg:         "Invalid"}
+			Msg:         ErrJsonNotMarshal}
 		w.WriteHeader(http.StatusBadRequest)
 		r, _ := json.Marshal(res)
 		w.Write(r)
@@ -215,7 +214,7 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode[id],
+			MessageCode: MsgCode[err.Error()],
 			Status:      Notok,
 			Msg:         err.Error()}
 		w.WriteHeader(http.StatusBadRequest)
@@ -229,9 +228,9 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode["_id could not be converted from Hex"],
+			MessageCode: MsgCode[ErrNotObjId],
 			Status:      Notok,
-			Msg:         "could not convert to the ObjectID"}
+			Msg:         ErrNotObjId}
 		w.WriteHeader(http.StatusBadRequest)
 		r, _ := json.Marshal(res)
 		w.Write(r)
@@ -242,7 +241,7 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		res := Response{
 			ServiceName: serviceName,
-			MessageCode: MsgCode["Student Data not found"],
+			MessageCode: MsgCode[ErrDataNotFound],
 			Status:      Notok,
 			Msg:         err.Error()}
 		w.WriteHeader(http.StatusInternalServerError)
@@ -252,9 +251,9 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) {
 	}
 	res := Response{
 		ServiceName: serviceName,
-		MessageCode: MsgCode["Data deleted successfully"],
+		MessageCode: MsgCode[MsgDataDeleted],
 		Status:      Ok,
-		Msg:         "Operation Successfully",
+		Msg:         MsgDataDeleted,
 		Data:        result}
 	w.WriteHeader(http.StatusOK)
 	rd, _ := json.Marshal(res)

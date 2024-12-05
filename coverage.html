@@ -55,11 +55,11 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/dvl-sagar/CRUDExamApplication/handler.go (89.3%)</option>
+				<option value="file0">github.com/dvl-sagar/CRUDExamApplication/handler.go (100.0%)</option>
 				
 				<option value="file1">github.com/dvl-sagar/CRUDExamApplication/main.go (0.0%)</option>
 				
-				<option value="file2">github.com/dvl-sagar/CRUDExamApplication/service.go (88.6%)</option>
+				<option value="file2">github.com/dvl-sagar/CRUDExamApplication/service.go (86.8%)</option>
 				
 				<option value="file3">github.com/dvl-sagar/CRUDExamApplication/utils.go (96.6%)</option>
 				
@@ -90,23 +90,22 @@ func RegisterStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" 
 
         var student Student
         err := json.NewDecoder(r.Body).Decode(&amp;student)
-        // fmt.Println(student)
         if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode["Json could not be decoded"],
+                        MessageCode: MsgCode[ErrJsonNotMarshal],
                         Status:      Notok,
-                        Msg:         err.Error()}
+                        Msg:         ErrJsonNotMarshal}
                 w.WriteHeader(http.StatusBadRequest)
                 r, _ := json.Marshal(res)
                 w.Write(r)
                 return
         }</span>
-        <span class="cov8" title="1">valRes, err := RegisterValidation(student)
+        <span class="cov8" title="1">err = RegisterValidation(student)
         if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode[valRes],
+                        MessageCode: MsgCode[err.Error()],
                         Status:      Notok,
                         Msg:         err.Error()}
                 w.WriteHeader(http.StatusBadRequest)
@@ -115,10 +114,10 @@ func RegisterStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" 
                 return
         }</span>
         <span class="cov8" title="1">resp, err := RegisterStudentService(student)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode["Data could not saved in Database"],
+                        MessageCode: MsgCode[err.Error()],
                         Status:      Notok,
                         Msg:         err.Error()}
                 w.WriteHeader(http.StatusInternalServerError)
@@ -129,9 +128,9 @@ func RegisterStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" 
 
         <span class="cov8" title="1">res := Response{
                 ServiceName: serviceName,
-                MessageCode: MsgCode["Data saved successfully"],
+                MessageCode: MsgCode[MsgDataSavedSuccessfully],
                 Status:      Ok,
-                Msg:         "Operation Successfull",
+                Msg:         MsgDataSavedSuccessfully,
                 Data:        resp}
         w.WriteHeader(http.StatusOK)
         rd, _ := json.Marshal(res)
@@ -146,9 +145,9 @@ func GetStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" title
         if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode["Json could not be decoded"],
+                        MessageCode: MsgCode[ErrJsonNotMarshal],
                         Status:      Notok,
-                        Msg:         "Invalid"}
+                        Msg:         ErrJsonNotMarshal}
                 w.WriteHeader(http.StatusBadRequest)
                 r, _ := json.Marshal(res)
                 w.Write(r)
@@ -158,7 +157,7 @@ func GetStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" title
         if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode[id],
+                        MessageCode: MsgCode[err.Error()],
                         Status:      Notok,
                         Msg:         err.Error()}
                 w.WriteHeader(http.StatusBadRequest)
@@ -171,9 +170,9 @@ func GetStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" title
         if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode["_id could not be converted from Hex"],
+                        MessageCode: MsgCode[ErrNotObjId],
                         Status:      Notok,
-                        Msg:         "could not convert to the ObjectID"}
+                        Msg:         ErrNotObjId}
                 w.WriteHeader(http.StatusBadRequest)
                 r, _ := json.Marshal(res)
                 w.Write(r)
@@ -184,9 +183,9 @@ func GetStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" title
         if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode["Student Data not found"],
+                        MessageCode: MsgCode[ErrDataNotFound],
                         Status:      Notok,
-                        Msg:         err.Error()}
+                        Msg:         ErrDataNotFound}
                 w.WriteHeader(http.StatusInternalServerError)
                 r, _ := json.Marshal(res)
                 w.Write(r)
@@ -195,9 +194,9 @@ func GetStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" title
 
         <span class="cov8" title="1">res := Response{
                 ServiceName: serviceName,
-                MessageCode: MsgCode["Data retrieved successfully"],
+                MessageCode: MsgCode[MsgDataFound],
                 Status:      Ok,
-                Msg:         "Operation Successfully",
+                Msg:         MsgDataFound,
                 Data:        std}
         w.WriteHeader(http.StatusOK)
         rd, _ := json.Marshal(res)
@@ -212,9 +211,9 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" ti
         if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode["Json could not be decoded"],
+                        MessageCode: MsgCode[ErrJsonNotMarshal],
                         Status:      Notok,
-                        Msg:         "Invalid"}
+                        Msg:         ErrJsonNotMarshal}
                 w.WriteHeader(http.StatusBadRequest)
                 r, _ := json.Marshal(res)
                 w.Write(r)
@@ -224,9 +223,9 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" ti
         <span class="cov8" title="1">if student.Id == "" </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode["_id not passed"],
+                        MessageCode: MsgCode[ErrIdNotPassed],
                         Status:      Notok,
-                        Msg:         "Id cannot be empty"}
+                        Msg:         ErrIdNotPassed}
                 w.WriteHeader(http.StatusBadRequest)
                 r, _ := json.Marshal(res)
                 w.Write(r)
@@ -238,9 +237,9 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" ti
         if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode["_id could not be converted from Hex"],
+                        MessageCode: MsgCode[ErrNotObjId],
                         Status:      Notok,
-                        Msg:         "could not convert to the ObjectID"}
+                        Msg:         ErrNotObjId}
                 w.WriteHeader(http.StatusBadRequest)
                 r, _ := json.Marshal(res)
                 w.Write(r)
@@ -251,7 +250,7 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" ti
         if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode["Data could not be saved in Database"],
+                        MessageCode: MsgCode[err.Error()],
                         Status:      Notok,
                         Msg:         err.Error()}
                 w.WriteHeader(http.StatusInternalServerError)
@@ -262,9 +261,9 @@ func UpdateStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" ti
 
         <span class="cov8" title="1">res := Response{
                 ServiceName: serviceName,
-                MessageCode: MsgCode["Data saved successfully"],
+                MessageCode: MsgCode[MsgDataSavedSuccessfully],
                 Status:      Ok,
-                Msg:         "Operation Successfully",
+                Msg:         MsgDataSavedSuccessfully,
                 Data:        result}
         w.WriteHeader(http.StatusOK)
         rd, _ := json.Marshal(res)
@@ -279,9 +278,9 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" ti
         if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode["Json could not be decoded"],
+                        MessageCode: MsgCode[ErrJsonNotMarshal],
                         Status:      Notok,
-                        Msg:         "Invalid"}
+                        Msg:         ErrJsonNotMarshal}
                 w.WriteHeader(http.StatusBadRequest)
                 r, _ := json.Marshal(res)
                 w.Write(r)
@@ -289,10 +288,10 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" ti
         }</span>
 
         <span class="cov8" title="1">id, err := fetchID(student)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode[id],
+                        MessageCode: MsgCode[err.Error()],
                         Status:      Notok,
                         Msg:         err.Error()}
                 w.WriteHeader(http.StatusBadRequest)
@@ -306,9 +305,9 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" ti
         if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode["_id could not be converted from Hex"],
+                        MessageCode: MsgCode[ErrNotObjId],
                         Status:      Notok,
-                        Msg:         "could not convert to the ObjectID"}
+                        Msg:         ErrNotObjId}
                 w.WriteHeader(http.StatusBadRequest)
                 r, _ := json.Marshal(res)
                 w.Write(r)
@@ -319,7 +318,7 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" ti
         if err != nil </span><span class="cov8" title="1">{
                 res := Response{
                         ServiceName: serviceName,
-                        MessageCode: MsgCode["Student Data not found"],
+                        MessageCode: MsgCode[ErrDataNotFound],
                         Status:      Notok,
                         Msg:         err.Error()}
                 w.WriteHeader(http.StatusInternalServerError)
@@ -327,11 +326,11 @@ func DeleteStudent(w http.ResponseWriter, r *http.Request) <span class="cov8" ti
                 w.Write(r)
                 return
         }</span>
-        <span class="cov0" title="0">res := Response{
+        <span class="cov8" title="1">res := Response{
                 ServiceName: serviceName,
-                MessageCode: MsgCode["Data deleted successfully"],
+                MessageCode: MsgCode[MsgDataDeleted],
                 Status:      Ok,
-                Msg:         "Operation Successfully",
+                Msg:         MsgDataDeleted,
                 Data:        result}
         w.WriteHeader(http.StatusOK)
         rd, _ := json.Marshal(res)
@@ -373,7 +372,7 @@ func main() <span class="cov0" title="0">{
 
 import (
         "context"
-        "fmt"
+        "errors"
 
         "go.mongodb.org/mongo-driver/bson"
         "go.mongodb.org/mongo-driver/bson/primitive"
@@ -384,7 +383,7 @@ import (
 func RegisterStudentService(student Student) (any, error) <span class="cov8" title="1">{
         response := make(map[string]interface{})
         studentDB, err := SetStruct(student)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
         <span class="cov8" title="1">Applicant := GetCollection("ExamApplication")
@@ -401,10 +400,11 @@ func getStudentByID(objID primitive.ObjectID) (any, error) <span class="cov8" ti
         Applicant := GetCollection("ExamApplication")
         err := Applicant.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&amp;oneStudent)
         if err != nil </span><span class="cov8" title="1">{
-                fmt.Println("Document not found")
-                return nil, err
+                return nil, errors.New(ErrJsonNotUnmarshal)
         }</span>
-
+        <span class="cov8" title="1">if oneStudent.Id.String() == "" </span><span class="cov0" title="0">{
+                return nil, errors.New(ErrDataNotFound)
+        }</span>
         <span class="cov8" title="1">return &amp;oneStudent, nil</span>
 }
 
@@ -419,8 +419,10 @@ func updateStudentByID(objID primitive.ObjectID, std Student) (any, error) <span
         opt := options.FindOneAndUpdate().SetReturnDocument(options.After)
         err = Applicant.FindOneAndUpdate(context.Background(), bson.M{"_id": objID}, finalQ, opt).Decode(&amp;resp)
         if err != nil </span><span class="cov8" title="1">{
-                fmt.Println("Student Data not found")
-                return nil, err
+                return nil, errors.New(ErrJsonNotMarshal)
+        }</span>
+        <span class="cov8" title="1">if resp.Id.String() == "" </span><span class="cov0" title="0">{
+                return nil, errors.New(ErrDataNotFound)
         }</span>
         <span class="cov8" title="1">return resp, nil</span>
 }
@@ -430,11 +432,12 @@ func deleteStudentByID(objID primitive.ObjectID) (any, error) <span class="cov8"
         Applicant := GetCollection("ExamApplication")
         err := Applicant.FindOneAndDelete(context.Background(), bson.M{"_id": objID}).Decode(&amp;oneStudent)
         if err != nil </span><span class="cov8" title="1">{
-                fmt.Println("Student Data not found")
-                return nil, err
+                return nil, errors.New(ErrJsonNotMarshal)
         }</span>
-
-        <span class="cov0" title="0">return &amp;oneStudent, nil</span>
+        <span class="cov8" title="1">if oneStudent.Id.String() == "" </span><span class="cov0" title="0">{
+                return nil, errors.New(ErrDataNotFound)
+        }</span>
+        <span class="cov8" title="1">return &amp;oneStudent, nil</span>
 }
 </pre>
 		
@@ -460,7 +463,7 @@ import (
 func GetConfig() <span class="cov8" title="1">{
         mongoUri := os.Getenv("MONGODB")
         if mongoUri == "" </span><span class="cov0" title="0">{
-                log.Fatal("Database URI not found")
+                log.Fatal(ErrDBUriMissing)
         }</span>
         <span class="cov8" title="1">Config.MongoUri = mongoUri
         fmt.Println(Config)</span>
@@ -473,15 +476,15 @@ func ConnectDB() <span class="cov8" title="1">{
         var err error
         Client, err = mongo.Connect(context.Background(), options.Client().ApplyURI(Config.MongoUri))
         if err != nil </span><span class="cov0" title="0">{
-                log.Fatal("Mongo Connection Failed", err)
+                log.Fatal(ErrDBConnection, err)
         }</span>
 
         <span class="cov8" title="1">err = Client.Ping(context.Background(), readpref.Primary())
         if err != nil </span><span class="cov0" title="0">{
-                log.Fatal("Ping failed ", err)
+                log.Fatal(ErrPing, err)
         }</span>
 
-        <span class="cov8" title="1">fmt.Println("Connected to MongoDB!")</span>
+        <span class="cov8" title="1">fmt.Println(MsgDBConnected)</span>
 }
 
 func GetCollection(name string) *mongo.Collection <span class="cov8" title="1">{
@@ -535,7 +538,7 @@ func SplitName(fullname string) (string, string, string) <span class="cov8" titl
         <span class="cov8" title="1">return firstname, middleName, lastName</span>
 }
 
-func RegisterValidation(s Student) (string, error) <span class="cov8" title="1">{
+func RegisterValidation(s Student) error <span class="cov8" title="1">{
         v := reflect.ValueOf(s)
         t := reflect.TypeOf(s)
 
@@ -550,23 +553,23 @@ func RegisterValidation(s Student) (string, error) <span class="cov8" title="1">
                 // Check for empty fields
                 <span class="cov8" title="1">if field.Kind() == reflect.String </span><span class="cov8" title="1">{
                         if strings.TrimSpace(field.String()) == "" </span><span class="cov8" title="1">{
-                                return "Missing field", fmt.Errorf("field %s is empty", fieldName)
+                                return errors.New(ErrMissingField)
                         }</span>
                         <span class="cov8" title="1">if fieldName == "Gender" </span><span class="cov8" title="1">{
                                 if !strings.EqualFold(field.String(), "male") &amp;&amp; !strings.EqualFold(field.String(), "female") </span><span class="cov8" title="1">{
-                                        return "Invalid value of gender", fmt.Errorf("field %s must be of either 'male' or 'female' case insensitive", fieldName)
+                                        return errors.New(ErrGenderValue)
                                 }</span>
                         }
 
                 } else<span class="cov8" title="1"> if field.Kind() == reflect.Int </span><span class="cov8" title="1">{
                         if field.Int() == 0 </span><span class="cov8" title="1">{
-                                return "Missing field", fmt.Errorf("field %s is empty", fieldName)
+                                return errors.New(ErrMissingField)
                         }</span> else<span class="cov8" title="1"> if field.Int() &gt; 999999 || field.Int() &lt; 100000 </span><span class="cov8" title="1">{
-                                return "Value out of range", fmt.Errorf("%s must be of six digits", fieldName)
+                                return errors.New(ErrPincode)
                         }</span>
                 }
         }
-        <span class="cov8" title="1">return "Validation successfull", nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 
 func SetStruct(student Student) (StudentDB, error) <span class="cov8" title="1">{
@@ -603,11 +606,11 @@ func SetStruct(student Student) (StudentDB, error) <span class="cov8" title="1">
 func fetchID(student map[string]interface{}) (string, error) <span class="cov8" title="1">{
         idMap, ok := student["_id"]
         if !ok </span><span class="cov8" title="1">{
-                return "_id not passed", errors.New("_id is not present")
+                return "", errors.New(ErrIdNotPassed)
         }</span>
         <span class="cov8" title="1">id, ok := idMap.(string)
         if !ok </span><span class="cov8" title="1">{
-                return "Invalid _id passed", errors.New("_id is not a string")
+                return "", errors.New(ErrInvalidId)
         }</span>
         <span class="cov8" title="1">return id, nil</span>
 }

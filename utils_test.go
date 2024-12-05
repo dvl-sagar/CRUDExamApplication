@@ -4,6 +4,7 @@ import (
 	"errors"
 	"reflect"
 	"testing"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -12,15 +13,14 @@ func TestRegisterValidation(t *testing.T) {
 	testCases := []struct {
 		testName string
 		student  Student
-		want     string
-		wantRes  string
+		want     error
 	}{
 		{
 			testName: "Valid",
 			student: Student{
 				Name:            "John Doe",
 				Gender:          "Male",
-				DOB:             "2000-01-01",
+				DOB:             "01-02-2001",
 				StateOfDomicile: "California",
 				HomeDistrict:    "Los Angeles",
 				FatherName:      "Doe Senior",
@@ -34,11 +34,10 @@ func TestRegisterValidation(t *testing.T) {
 				City:            "Los Angeles",
 				PinCode:         900001,
 			},
-			want:    "",
-			wantRes: "Validation successfull",
+			want: errors.New(MsgValidationSuccessfull),
 		},
 		{
-			testName: "Missing Required Fields",
+			testName: "Missing Fields",
 			student: Student{
 				Name:            "",
 				Gender:          "Male",
@@ -56,8 +55,7 @@ func TestRegisterValidation(t *testing.T) {
 				City:            "Los Angeles",
 				PinCode:         0,
 			},
-			want:    "field Name is empty",
-			wantRes: "Missing field",
+			want: errors.New(ErrMissingField),
 		},
 		{
 			testName: "Missing PinCode",
@@ -68,7 +66,7 @@ func TestRegisterValidation(t *testing.T) {
 				StateOfDomicile: "haryana",
 				HomeDistrict:    "12345",
 				FatherName:      "N/A",
-				BoardName:       "Some Extremely Long Board Name That Might Be Truncated",
+				BoardName:       "Some Extremely Long Board Name",
 				YearOfPassing:   "abcd",
 				RollNumber:      "0000",
 				Address:         "123",
@@ -78,8 +76,7 @@ func TestRegisterValidation(t *testing.T) {
 				City:            "gurugram",
 				PinCode:         0, // Invalid pin code
 			},
-			want:    "field PinCode is empty",
-			wantRes: "Missing field",
+			want: errors.New(ErrMissingField),
 		},
 		{
 			testName: "Invalid PinCode",
@@ -90,7 +87,7 @@ func TestRegisterValidation(t *testing.T) {
 				StateOfDomicile: "haryana",
 				HomeDistrict:    "12345",
 				FatherName:      "N/A",
-				BoardName:       "Some Extremely Long Board Name That Might Be Truncated",
+				BoardName:       "ICSE",
 				YearOfPassing:   "abcd",
 				RollNumber:      "0000",
 				Address:         "123",
@@ -100,8 +97,7 @@ func TestRegisterValidation(t *testing.T) {
 				City:            "gurugram",
 				PinCode:         85, // Invalid pin code
 			},
-			want:    "PinCode must be of six digits",
-			wantRes: "Value out of range",
+			want: errors.New(ErrPincode),
 		},
 		{
 			testName: "Invalid gender",
@@ -112,7 +108,7 @@ func TestRegisterValidation(t *testing.T) {
 				StateOfDomicile: "haryana",
 				HomeDistrict:    "12345",
 				FatherName:      "N/A",
-				BoardName:       "Some Extremely Long Board Name That Might Be Truncated",
+				BoardName:       "HSBE",
 				YearOfPassing:   "abcd",
 				RollNumber:      "0000",
 				Address:         "123",
@@ -122,24 +118,26 @@ func TestRegisterValidation(t *testing.T) {
 				City:            "gurugram",
 				PinCode:         858978, // Invalid pin code
 			},
-			want:    "field Gender must be of either 'male' or 'female' case insensitive",
-			wantRes: "Invalid value of gender",
+			want: errors.New(ErrGenderValue),
 		},
 	}
 	for _, tt := range testCases {
 		t.Run(tt.testName, func(t *testing.T) {
-			valRes, err := RegisterValidation(tt.student)
-			if err != nil && err.Error() != tt.want {
-				t.Errorf("RegisterValidation() error = %v, want %v", err.Error(), tt.want)
-			}
-			if valRes != tt.wantRes {
-				t.Errorf("got message code %s want %s", valRes, tt.want)
+			err := RegisterValidation(tt.student)
+			if err != nil {
+				if err.Error() != tt.want.Error() {
+					t.Errorf("\ngot %v\nwant %v", err, tt.want)
+				}
 			}
 		})
 	}
 }
 
 func TestSetStruct(t *testing.T) {
+
+	today := time.Now()
+	Date := today.Format("02-01-2006")
+
 	testCases := []struct {
 		name    string
 		data    Student
@@ -214,7 +212,7 @@ func TestSetStruct(t *testing.T) {
 			data: Student{
 				Name:            "John Doe",
 				Gender:          "Male",
-				DOB:             "04-12-2024",
+				DOB:             Date,
 				StateOfDomicile: "California",
 				HomeDistrict:    "Los Angeles",
 				FatherName:      "Michael Doe",
@@ -314,16 +312,16 @@ func TestFetchID(t *testing.T) {
 			data: map[string]interface{}{
 				"Name": "12345",
 			},
-			wantStr: "_id not passed",
-			wantErr: errors.New("_id is not present"),
+			wantStr: "",
+			wantErr: errors.New(ErrIdNotPassed),
 		},
 		{
 			name: "_id not string",
 			data: map[string]interface{}{
 				"_id": 123456,
 			},
-			wantStr: "Invalid _id passed",
-			wantErr: errors.New("_id is not a string"),
+			wantStr: "",
+			wantErr: errors.New(ErrInvalidId),
 		},
 	}
 	for _, tt := range testCases {
@@ -342,6 +340,8 @@ func TestFetchID(t *testing.T) {
 }
 
 func TestPrepareQuery(t *testing.T) {
+	today := time.Now()
+	date := today.Format("02-01-2006")
 	tests := []struct {
 		name      string
 		input     Student
@@ -410,7 +410,7 @@ func TestPrepareQuery(t *testing.T) {
 			name: "Date Paradox",
 			input: Student{
 				Name: "John Doe",
-				DOB:  "04-12-2024",
+				DOB:  date,
 			},
 			want: bson.D{
 				{Key: "firstName", Value: "John"},

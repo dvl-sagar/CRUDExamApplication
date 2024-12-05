@@ -1,35 +1,55 @@
 package main
 
-const serviceName = "CRUDExamApplication"
-
 const (
-	Notok = "Not-Ok"
-	Ok    = "OK"
-)
-
-const (
-	errFieldEmpty   = "field cannot be empty"
-	ErrInvalidValue = "invalid value provided"
-	ErrDateInvalid  = "invalid Date format (DD-MM-YYYY)"
-	ErrDateParadox  = "date paradox"
+	serviceName              = "CRUDExamApplication"
+	Notok                    = "Not-Ok"
+	Ok                       = "OK"
+	MsgDataSavedSuccessfully = "data saved successfully"
+	MsgValidationSuccessfull = "validation successfull"
+	MsgDataDeleted           = "data deleted successfully"
+	MsgDBConnected           = "connected to MONGO :)"
+	MsgDataFound             = "data retrieved successfully"
+	ErrDBUriMissing          = "mongo URI not found"
+	ErrDBConnection          = "mongo Connection Failed"
+	ErrPing                  = "Ping Failed"
+	ErrFieldEmpty            = "field cannot be empty"
+	ErrInvalidValue          = "invalid value provided"
+	ErrDateInvalid           = "invalid Date format (DD-MM-YYYY)"
+	ErrDateParadox           = "date paradox"
+	ErrMissingField          = "missing field"
+	ErrGenderValue           = "Invalid value of gender"
+	ErrPincode               = "value out of range should of 6 digits only"
+	ErrIdNotPassed           = "_id not passed"
+	ErrInvalidId             = "invalid _id passed"
+	ErrNotObjId              = "_id could not be converted from Hex"
+	ErrDataNotFound          = "data not found"
+	ErrJsonNotMarshal        = "json could not be decoded"
+	ErrJsonNotUnmarshal      = "data Unmarshal error"
+	ErrDataNotSaved          = "data could not be saved in Database"
+	ErrNotStruct             = "Not a struct"
 )
 
 var MsgCode = map[string]string{
-	"Data saved successfully":             "INFO001",
-	"Validation successfull":              "INFO002",
-	"Data retrieved successfully":         "INFO003",
-	"Data deleted successfully":           "INFO004",
-	"Invalid Input Received":              "ERR001",
-	"Json could not be decoded":           "ERR002",
-	"Data could not be saved in Database": "ERR003",
-	"Missing field":                       "ERR004",
-	"Value out of range":                  "ERR005",
-	"Not a struct":                        "ERR006",
-	"Invalid value of gender":             "ERR007",
-	"_id not passed":                      "ERR008",
-	"Invalid _id passed":                  "ERR009",
-	"_id could not be converted from Hex": "ERR010",
-	"Student Data not found":              "ERR011",
-	"Invalid Date format (DD-MM-YYYY)":    "ERR0012",
-	"Date paradox":                        "ERR0013",
+	MsgDataSavedSuccessfully: "INFO001",
+	MsgValidationSuccessfull: "INFO002",
+	MsgDataFound:             "INFO003",
+	MsgDataDeleted:           "INFO004",
+	MsgDBConnected:           "INFO005",
+	ErrInvalidValue:          "ERR001",
+	ErrJsonNotMarshal:        "ERR002",
+	ErrDataNotSaved:          "ERR003",
+	ErrMissingField:          "ERR004",
+	ErrPincode:               "ERR005",
+	ErrNotStruct:             "ERR006",
+	ErrGenderValue:           "ERR007",
+	ErrIdNotPassed:           "ERR008",
+	ErrInvalidId:             "ERR009",
+	ErrNotObjId:              "ERR010",
+	ErrDataNotFound:          "ERR011",
+	ErrDateInvalid:           "ERR012",
+	ErrDateParadox:           "ERR013",
+	ErrDBConnection:          "ERR013",
+	ErrPing:                  "ERR014",
+	ErrDBUriMissing:          "ERR015",
+	ErrJsonNotUnmarshal:      "ERR016",
 }

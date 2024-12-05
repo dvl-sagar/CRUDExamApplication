@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -30,10 +30,11 @@ func getStudentByID(objID primitive.ObjectID) (any, error) {
 	Applicant := GetCollection("ExamApplication")
 	err := Applicant.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&oneStudent)
 	if err != nil {
-		fmt.Println("Document not found")
-		return nil, err
+		return nil, errors.New(ErrJsonNotUnmarshal)
 	}
-
+	if oneStudent.Id.String() == "" {
+		return nil, errors.New(ErrDataNotFound)
+	}
 	return &oneStudent, nil
 }
 
@@ -48,8 +49,10 @@ func updateStudentByID(objID primitive.ObjectID, std Student) (any, error) {
 	opt := options.FindOneAndUpdate().SetReturnDocument(options.After)
 	err = Applicant.FindOneAndUpdate(context.Background(), bson.M{"_id": objID}, finalQ, opt).Decode(&resp)
 	if err != nil {
-		fmt.Println("Student Data not found")
-		return nil, err
+		return nil, errors.New(ErrJsonNotMarshal)
+	}
+	if resp.Id.String() == "" {
+		return nil, errors.New(ErrDataNotFound)
 	}
 	return resp, nil
 }
@@ -59,9 +62,10 @@ func deleteStudentByID(objID primitive.ObjectID) (any, error) {
 	Applicant := GetCollection("ExamApplication")
 	err := Applicant.FindOneAndDelete(context.Background(), bson.M{"_id": objID}).Decode(&oneStudent)
 	if err != nil {
-		fmt.Println("Student Data not found")
-		return nil, err
+		return nil, errors.New(ErrJsonNotMarshal)
 	}
-
+	if oneStudent.Id.String() == "" {
+		return nil, errors.New(ErrDataNotFound)
+	}
 	return &oneStudent, nil
 }

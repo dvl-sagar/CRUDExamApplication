@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -63,6 +64,27 @@ func TestRegisterStudent(t *testing.T) {
 			},
 			wantCode: http.StatusBadRequest,
 		},
+		{
+			name: "Invalid date",
+			data: map[string]interface{}{
+				"name":            "sagar sharma",
+				"gender":          "Male",
+				"dob":             "2001-08-21",
+				"stateOfDomicile": "Karnataka",
+				"homeDistrict":    "Bangalore",
+				"fatherName":      "Robert Doe",
+				"boardName":       "ICSE",
+				"yearOfPassing":   "2020",
+				"rollNumber":      "ICSE123456",
+				"address":         "123 Main Street, Oakwood",
+				"houseNoVillage":  "Flat 101, Maple Residency",
+				"state":           "Karnataka",
+				"district":        "Bangalore Urban",
+				"city":            "Bangalore",
+				"pinCode":         560001,
+			},
+			wantCode: http.StatusInternalServerError,
+		},
 	}
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
@@ -83,7 +105,6 @@ func TestRegisterStudent(t *testing.T) {
 		})
 	}
 }
-
 func TestGetStudent(t *testing.T) {
 	GetConfig()
 	ConnectDB()
@@ -145,7 +166,6 @@ func TestGetStudent(t *testing.T) {
 		})
 	}
 }
-
 func TestUpdateStudent(t *testing.T) {
 	GetConfig()
 	ConnectDB()
@@ -207,6 +227,31 @@ func TestUpdateStudent(t *testing.T) {
 func TestDeleteStudent(t *testing.T) {
 	GetConfig()
 	ConnectDB()
+	input := StudentDB{
+		FirstName:        "John",
+		MiddleName:       "Doe",
+		LastName:         "Smith",
+		Gender:           "Male",
+		DOB:              "01-01-1990",
+		StateOfDomicile:  "California",
+		HomeDistrict:     "Los Angeles",
+		FatherFirstName:  "Michael",
+		FatherMiddleName: "Thomas",
+		FatherLastName:   "Smith",
+		BoardName:        "State Board",
+		YearOfPassing:    "2008",
+		RollNumber:       "123456789",
+		Address:          "1234 Elm Street",
+		HouseNoVillage:   "Elm Village",
+		State:            "California",
+		District:         "Los Angeles",
+		City:             "Los Angeles",
+		PinCode:          90001,
+		Age:              34,
+	}
+	Applicant := GetCollection("ExamApplication")
+	result, _ := Applicant.InsertOne(context.Background(), input)
+
 	testCases := []struct {
 		name     string
 		data     interface{}
@@ -239,9 +284,23 @@ func TestDeleteStudent(t *testing.T) {
 			wantCode: http.StatusInternalServerError,
 		},
 		{
+			name: "_id not passed",
+			data: map[string]interface{}{
+				"name": "67504e69865b091240c08cb7",
+			},
+			wantCode: http.StatusBadRequest,
+		},
+		{
+			name: "_id not string",
+			data: map[string]interface{}{
+				"name": 123456,
+			},
+			wantCode: http.StatusBadRequest,
+		},
+		{
 			name: "valid",
 			data: map[string]interface{}{
-				"_id": "67504f92ea7beed9ca14b255",
+				"_id": result.InsertedID,
 			},
 			wantCode: http.StatusOK,
 		},

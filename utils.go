@@ -20,7 +20,7 @@ import (
 func GetConfig() {
 	mongoUri := os.Getenv("MONGODB")
 	if mongoUri == "" {
-		log.Fatal("Database URI not found")
+		log.Fatal(ErrDBUriMissing)
 	}
 	Config.MongoUri = mongoUri
 	fmt.Println(Config)
@@ -33,15 +33,15 @@ func ConnectDB() {
 	var err error
 	Client, err = mongo.Connect(context.Background(), options.Client().ApplyURI(Config.MongoUri))
 	if err != nil {
-		log.Fatal("Mongo Connection Failed", err)
+		log.Fatal(ErrDBConnection, err)
 	}
 
 	err = Client.Ping(context.Background(), readpref.Primary())
 	if err != nil {
-		log.Fatal("Ping failed ", err)
+		log.Fatal(ErrPing, err)
 	}
 
-	fmt.Println("Connected to MongoDB!")
+	fmt.Println(MsgDBConnected)
 }
 
 func GetCollection(name string) *mongo.Collection {
@@ -95,7 +95,7 @@ func SplitName(fullname string) (string, string, string) {
 	return firstname, middleName, lastName
 }
 
-func RegisterValidation(s Student) (string, error) {
+func RegisterValidation(s Student) error {
 	v := reflect.ValueOf(s)
 	t := reflect.TypeOf(s)
 
@@ -110,23 +110,23 @@ func RegisterValidation(s Student) (string, error) {
 		// Check for empty fields
 		if field.Kind() == reflect.String {
 			if strings.TrimSpace(field.String()) == "" {
-				return "Missing field", fmt.Errorf("field %s is empty", fieldName)
+				return errors.New(ErrMissingField)
 			}
 			if fieldName == "Gender" {
 				if !strings.EqualFold(field.String(), "male") && !strings.EqualFold(field.String(), "female") {
-					return "Invalid value of gender", fmt.Errorf("field %s must be of either 'male' or 'female' case insensitive", fieldName)
+					return errors.New(ErrGenderValue)
 				}
 			}
 
 		} else if field.Kind() == reflect.Int {
 			if field.Int() == 0 {
-				return "Missing field", fmt.Errorf("field %s is empty", fieldName)
+				return errors.New(ErrMissingField)
 			} else if field.Int() > 999999 || field.Int() < 100000 {
-				return "Value out of range", fmt.Errorf("%s must be of six digits", fieldName)
+				return errors.New(ErrPincode)
 			}
 		}
 	}
-	return "Validation successfull", nil
+	return nil
 }
 
 func SetStruct(student Student) (StudentDB, error) {
@@ -163,11 +163,11 @@ func SetStruct(student Student) (StudentDB, error) {
 func fetchID(student map[string]interface{}) (string, error) {
 	idMap, ok := student["_id"]
 	if !ok {
-		return "_id not passed", errors.New("_id is not present")
+		return "", errors.New(ErrIdNotPassed)
 	}
 	id, ok := idMap.(string)
 	if !ok {
-		return "Invalid _id passed", errors.New("_id is not a string")
+		return "", errors.New(ErrInvalidId)
 	}
 	return id, nil
 }
